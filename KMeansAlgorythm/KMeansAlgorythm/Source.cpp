@@ -102,7 +102,16 @@ void initKmeans()
 	unsigned short nOfClusters;
 	std::cin >> nOfClusters;
 
-	kmeans = std::make_unique<Kmeans>(nOfPoints, nOfClusters, winWidth, winHeight);
+	std::vector<Point> kernels;
+	Point kernel;
+	for (auto clusterN = 0; clusterN < nOfClusters; clusterN++)
+	{
+		std::cout << "Enter kernel "<< clusterN + 1 << " position [xpos ypox] in [" << winWidth << ", " << winHeight << "]" << std::endl;
+		std::cin >> kernel.x >> kernel.y;
+		kernels.push_back(kernel);
+	}
+
+	kmeans = std::make_unique<Kmeans>(nOfPoints, nOfClusters, kernels, winWidth, winHeight);
 }
 
 

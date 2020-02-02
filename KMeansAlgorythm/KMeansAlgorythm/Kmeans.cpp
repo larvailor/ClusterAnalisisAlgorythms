@@ -12,7 +12,7 @@ void Kmeans::randomizePoints()
 {
 	std::srand(unsigned(std::time(0)));
 
-	for (auto pointN = 0; pointN < m_nOfPoints; pointN++)
+	for (size_t pointN = 0; pointN < m_nOfPoints; pointN++)
 	{
 		std::shared_ptr<Point> point = std::make_shared<Point>();
 		point->x = 15 + rand() % (m_areaWidth - 25);
@@ -34,7 +34,7 @@ void Kmeans::randomizePoints()
 //		Constructors
 //
 
-Kmeans::Kmeans(unsigned nOfPoints, unsigned short nOfClusters, unsigned short areaWidth, unsigned short areaHeight) :
+Kmeans::Kmeans(unsigned nOfPoints, unsigned short nOfClusters, std::vector<Point> kernels, unsigned short areaWidth, unsigned short areaHeight) :
 	m_nOfPoints(nOfPoints),
 	m_nOfClusters(nOfClusters),
 	m_areaWidth(areaWidth),

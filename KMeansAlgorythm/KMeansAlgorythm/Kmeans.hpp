@@ -11,8 +11,7 @@ struct Point
 
 struct Cluster
 {
-	unsigned short kernelX;
-	unsigned short kernelY;
+	Point kernel;
 	std::vector<std::shared_ptr<Point>> m_points;
 };
 
@@ -52,7 +51,7 @@ public:
 	//		Constructors
 	//
 	
-	Kmeans(unsigned nOfPoints, unsigned short nOfClusters, unsigned short areaWidth, unsigned short areaHeight);
+	Kmeans(unsigned nOfPoints, unsigned short nOfClusters, std::vector<Point> kernels, unsigned short areaWidth, unsigned short areaHeight);
 
 	//-----------------------------------------------
 	//		Accessors
