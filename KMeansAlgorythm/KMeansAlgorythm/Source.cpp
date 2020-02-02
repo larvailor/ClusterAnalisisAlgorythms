@@ -7,12 +7,26 @@
 
 #include "Kmeans.hpp"
 
+//-----------------------------------------------
+//		Constants
+//
+
+const unsigned short winWidth = 1400;
+const unsigned short winHeight = 750;
+const bool bVertex = true;
 
 //-----------------------------------------------
 //		Global variables
 //
 
+// Drawing
+
 std::unique_ptr<sf::RenderWindow> renderWindow;
+std::vector<sf::Vertex> points;
+
+
+// Algorythms
+
 std::unique_ptr<Kmeans> kmeans;
 
 
@@ -21,7 +35,9 @@ std::unique_ptr<Kmeans> kmeans;
 //		Forward declarations
 //
 
+void initKmeans();
 void draw();
+void drawVertex();
 
 
 
@@ -32,27 +48,24 @@ void draw();
 
 int main()
 {
-	std::cout << "Enter the number of points: ";
-	unsigned nOfPoints;
-	std::cin >> nOfPoints;
+	initKmeans();
 
-	std::cout << "Enter the number of clusters: ";
-	unsigned short nOfClusters;
-	std::cin >> nOfClusters;
+	for (auto& point : kmeans->getAllPoints())
+	{
+		points.push_back(sf::Vertex(sf::Vector2f(point->x, point->y), sf::Color::Red));
+	}
 
-	renderWindow = std::make_unique<sf::RenderWindow>(sf::VideoMode(1500, 800), "Kmeans", sf::Style::Titlebar | sf::Style::Close);
+
+
+	renderWindow = std::make_unique<sf::RenderWindow>(sf::VideoMode(winWidth, winHeight), "Kmeans", sf::Style::Titlebar | sf::Style::Close);
 	renderWindow->setFramerateLimit(60);
-	
-	kmeans = std::make_unique<Kmeans>(
-		nOfPoints,
-		nOfClusters,
-		static_cast<unsigned short>(renderWindow->getSize().x),
-		static_cast<unsigned short>(renderWindow->getSize().y)
-	);
 
+	sf::Clock frameTime;
 	sf::Event event;
 	while (renderWindow->isOpen())
 	{
+		frameTime.restart().asSeconds();
+		
 		while (renderWindow->pollEvent(event))
 		{
 			switch (event.type)
@@ -64,13 +77,34 @@ int main()
 		}
 
 		renderWindow->clear();
-		draw();
+		
+		bVertex ? drawVertex() : draw();
+		
 		renderWindow->display();
+		
+		std::cout << "FT: " << frameTime.getElapsedTime().asSeconds() << std::endl;
+		frameTime.restart().asSeconds();
 	}
 
 
 	return 0;
 }
+
+
+
+void initKmeans()
+{
+	std::cout << "Enter the number of points: ";
+	unsigned nOfPoints;
+	std::cin >> nOfPoints;
+
+	std::cout << "Enter the number of clusters: ";
+	unsigned short nOfClusters;
+	std::cin >> nOfClusters;
+
+	kmeans = std::make_unique<Kmeans>(nOfPoints, nOfClusters, winWidth, winHeight);
+}
+
 
 
 void draw()
@@ -85,4 +119,11 @@ void draw()
 		cs.setPosition(sf::Vector2f(point->x, point->y));
 		renderWindow->draw(cs);
 	}
+}
+
+
+
+void drawVertex()
+{
+	renderWindow->draw(&points[0], points.size(), sf::Points);
 }
