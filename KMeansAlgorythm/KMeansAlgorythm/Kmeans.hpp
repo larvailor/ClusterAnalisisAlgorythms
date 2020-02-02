@@ -1,23 +1,19 @@
 #pragma once
 
-#include "SFML/Graphics.hpp"
-#include "SFML/Audio.hpp"
-#include "SFML/Network.hpp"
-#include "SFML/Window.hpp"
-#include "SFML/System.hpp"
+#include <iostream>
+#include <vector>
 
 struct Point
 {
-	sf::Vector2f pos;
-	sf::Uint8 radius;
+	unsigned short x;
+	unsigned short y;
 };
 
 struct Cluster
 {
-	sf::Vector2f kernel;
-	sf::Uint8 kernelRadius;
+	unsigned short kernelX;
+	unsigned short kernelY;
 	std::vector<std::shared_ptr<Point>> m_points;
-	sf::Color color;
 };
 
 class Kmeans
@@ -29,7 +25,10 @@ private:
 	//
 	/////////////////////////////////////////////////
 
-	std::shared_ptr<sf::RenderWindow> m_renderWindow;
+	unsigned m_nOfPoints;
+	unsigned short m_nOfClusters;
+	unsigned short m_areaWidth;
+	unsigned short m_areaHeight;
 
 	std::vector<std::shared_ptr<Point>> m_allPoints;
 	std::vector<Cluster> m_clusters;
@@ -40,7 +39,7 @@ private:
 	//
 	/////////////////////////////////////////////////
 
-	void randomizePoints(sf::Uint32& nOfPoints, sf::Uint32& nOfClusters, sf::Vector2u& areaSize);
+	void randomizePoints();
 
 public:
 	/////////////////////////////////////////////////
@@ -53,8 +52,13 @@ public:
 	//		Constructors
 	//
 	
-	Kmeans(sf::Uint32& nOfOPoints, sf::Uint32& nOfClusters, sf::Vector2u areaSize, std::shared_ptr<sf::RenderWindow>& renderWindow);
+	Kmeans(unsigned nOfPoints, unsigned short nOfClusters, unsigned short areaWidth, unsigned short areaHeight);
 
-	// TMP
-	void draw();
+	//-----------------------------------------------
+	//		Accessors
+	//
+
+		// Getters
+	std::vector<std::shared_ptr<Point>>& getAllPoints();
+	std::vector<Cluster>& getAllClusters();
 };

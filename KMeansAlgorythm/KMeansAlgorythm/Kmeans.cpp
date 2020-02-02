@@ -8,18 +8,15 @@
 //
 /////////////////////////////////////////////////
 
-void Kmeans::randomizePoints(sf::Uint32& nOfPoints, sf::Uint32& nOfClusters, sf::Vector2u& areaSize)
+void Kmeans::randomizePoints()
 {
 	std::srand(unsigned(std::time(0)));
 
-	sf::Uint8 frame = m_renderWindow->getSize().x * 0.01;
-
-	for (auto pointN = 0; pointN < nOfPoints; pointN++)
+	for (auto pointN = 0; pointN < m_nOfPoints; pointN++)
 	{
 		std::shared_ptr<Point> point = std::make_shared<Point>();
-		point->radius = 1;
-		point->pos.x = frame + rand() % (areaSize.x - frame - 15);
-		point->pos.y = frame + rand() % (areaSize.y - frame - 15);
+		point->x = 15 + rand() % (m_areaWidth - 25);
+		point->y = 15 + rand() % (m_areaHeight - 25);
 
 		m_allPoints.push_back(std::move(point));
 	}
@@ -37,24 +34,30 @@ void Kmeans::randomizePoints(sf::Uint32& nOfPoints, sf::Uint32& nOfClusters, sf:
 //		Constructors
 //
 
+Kmeans::Kmeans(unsigned nOfPoints, unsigned short nOfClusters, unsigned short areaWidth, unsigned short areaHeight) :
+	m_nOfPoints(nOfPoints),
+	m_nOfClusters(nOfClusters),
+	m_areaWidth(areaWidth),
+	m_areaHeight(areaHeight)
 
-Kmeans::Kmeans(sf::Uint32& nOfPoints, sf::Uint32& nOfClusters, sf::Vector2u areaSize, std::shared_ptr<sf::RenderWindow>& renderWindow) :
-	m_renderWindow(renderWindow)
 {
-	randomizePoints(nOfPoints, nOfClusters, areaSize);
-
+	randomizePoints();
 }
 
-void Kmeans::draw()
-{
 
-	sf::CircleShape cs;
-	cs.setFillColor(sf::Color::Red);
-	for (auto& point : m_allPoints)
-	{
-		cs.setPosition(point->pos);
-		cs.setRadius(point->radius);
-		m_renderWindow->draw(cs);
-	}
+
+//-----------------------------------------------
+//		Accessors
+//
+
+//		Getters
+
+std::vector<std::shared_ptr<Point>>& Kmeans::getAllPoints()
+{
+	return m_allPoints;
 }
 
+std::vector<Cluster>& Kmeans::getAllClusters()
+{
+	return m_clusters;
+}
