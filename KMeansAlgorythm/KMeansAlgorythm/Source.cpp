@@ -12,8 +12,8 @@
 //		Constants
 //
 
-const unsigned short winWidth = 1400;
-const unsigned short winHeight = 750;
+const unsigned short winWidth = 1500;
+const unsigned short winHeight = 800;
 const bool bVertex = true;
 
 //-----------------------------------------------
@@ -78,7 +78,7 @@ int main()
 		
 		renderWindow->display();
 		
-		std::cout << "FT: " << frameTime.getElapsedTime().asSeconds() << std::endl;
+		std::cout << "      FT: " << frameTime.getElapsedTime().asSeconds() << std::endl;
 		frameTime.restart().asSeconds();
 	}
 
@@ -191,4 +191,5 @@ void drawVertex()
 void kmeansThreadFunc()
 {
 	kmeans->solve();
+	std::cout << "SOLVED" << std::endl;
 }

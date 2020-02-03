@@ -48,6 +48,7 @@ private:
 	std::vector<Cluster> m_clustersCopyForDraw;
 
 	std::mutex m_mutex;
+	bool bSolved;
 
 	/////////////////////////////////////////////////
 	// 
@@ -64,6 +65,7 @@ private:
 
 	void recalculateClusters();
 	double calculateEuclidDistance(Point& point, Point& kernel);
+	void recalculateKernels();
 
 public:
 	/////////////////////////////////////////////////

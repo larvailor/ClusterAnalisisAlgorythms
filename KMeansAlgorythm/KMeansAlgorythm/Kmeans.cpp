@@ -1,7 +1,8 @@
 #include "Kmeans.hpp"
 
-#include <limits>
 #include <ctime>
+#include <chrono>
+#include <thread>
 
 /////////////////////////////////////////////////
 // 
@@ -64,7 +65,7 @@ void Kmeans::recalculateClusters()
 			}
 		}
 
-		m_clusters[currNearestClusterN].items.push_back(&item); // emplace_back
+		m_clusters[currNearestClusterN].items.emplace_back(&item);
 	}
 
 	std::lock_guard<std::mutex> lock(m_mutex);
@@ -74,6 +75,32 @@ void Kmeans::recalculateClusters()
 double Kmeans::calculateEuclidDistance(Point& point, Point& kernel)
 {
 	return sqrt((point.x - kernel.x) * (point.x - kernel.x) + (point.y - kernel.y) * (point.y - kernel.y));
+}
+
+void Kmeans::recalculateKernels()
+{
+	bSolved = true;
+
+	double newX = 0;
+	double newY = 0;
+
+	for (auto& cluster : m_clusters)
+	{
+		newX = 0;
+		newY = 0;
+
+		for (auto& item : cluster.items)
+		{
+			newX = (newX + item->pos.x) / 2;
+			newY = (newY + item->pos.y) / 2;
+		}
+
+		if (cluster.kernel.x != static_cast<unsigned short>(newX) || cluster.kernel.y != static_cast<unsigned short>(newY))
+			bSolved = false;
+
+		cluster.kernel.x = newX;
+		cluster.kernel.y = newY;
+	}
 }
 
 
@@ -126,8 +153,12 @@ std::vector<Cluster>& Kmeans::getAllClusters()
 
 void Kmeans::solve()
 {
-	while (true)
+	bSolved = false;
+
+	while (!bSolved)
 	{
 		recalculateClusters();
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		recalculateKernels();
 	}
 }
