@@ -1,3 +1,4 @@
+#include <thread>
 
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
@@ -39,6 +40,7 @@ void initKmeans();
 void draw();
 void drawVertex();
 
+void kmeansThreadFunc();
 
 
 
@@ -47,15 +49,9 @@ void drawVertex();
 //
 
 int main()
-{
+{	std::srand(unsigned(std::time(0)));
 	initKmeans();
-
-	for (auto& point : kmeans->getAllPoints())
-	{
-		points.push_back(sf::Vertex(sf::Vector2f(point->x, point->y), sf::Color::Red));
-	}
-
-
+	std::thread kmeansThread(kmeansThreadFunc);
 
 	renderWindow = std::make_unique<sf::RenderWindow>(sf::VideoMode(winWidth, winHeight), "Kmeans", sf::Style::Titlebar | sf::Style::Close);
 	renderWindow->setFramerateLimit(60);
@@ -86,6 +82,7 @@ int main()
 		frameTime.restart().asSeconds();
 	}
 
+	kmeansThread.join();
 
 	return 0;
 }
@@ -94,9 +91,9 @@ int main()
 
 void initKmeans()
 {
-	std::cout << "Enter the number of points: ";
-	unsigned nOfPoints;
-	std::cin >> nOfPoints;
+	std::cout << "Enter the number of items: ";
+	unsigned nOfItems;
+	std::cin >> nOfItems;
 
 	std::cout << "Enter the number of clusters: ";
 	unsigned short nOfClusters;
@@ -111,21 +108,21 @@ void initKmeans()
 		kernels.push_back(kernel);
 	}
 
-	kmeans = std::make_unique<Kmeans>(nOfPoints, nOfClusters, kernels, winWidth, winHeight);
+	kmeans = std::make_unique<Kmeans>(nOfItems, nOfClusters, kernels, winWidth, winHeight);
 }
 
 
 
 void draw()
 {
-	static std::vector<std::shared_ptr<Point>>& allPoints = kmeans->getAllPoints();
+	auto& allItems = kmeans->getAllItems();
 
 	static sf::CircleShape cs(1);
 	cs.setFillColor(sf::Color::Red);
 
-	for (auto& point : allPoints)
+	for (auto& item : allItems)
 	{
-		cs.setPosition(sf::Vector2f(point->x, point->y));
+		cs.setPosition(sf::Vector2f(item.pos.x, item.pos.y));
 		renderWindow->draw(cs);
 	}
 }
@@ -134,5 +131,64 @@ void draw()
 
 void drawVertex()
 {
-	renderWindow->draw(&points[0], points.size(), sf::Points);
+	auto& clusters = kmeans->getAllClusters();
+
+	std::vector<sf::Vertex> items;
+
+	static sf::Color color;
+	static sf::CircleShape kernel(8);
+	kernel.setOutlineThickness(3);
+	kernel.setOutlineColor(sf::Color::White);
+
+	for (auto clusterN = 0; clusterN < clusters.size(); clusterN++)
+	{
+		switch (clusterN)
+		{
+		case 0:
+			color = sf::Color::Red;
+			break;
+		case 1:
+			color = sf::Color::Green;
+			break;
+		case 2:
+			color = sf::Color::Magenta;
+			break;
+		case 3:
+			color = sf::Color::Yellow;
+			break;
+		case 4:
+			color = sf::Color::Cyan;
+			break;
+		default:
+			std::srand(clusterN);
+			color = sf::Color(
+				rand() % 255,
+				rand() % 255,
+				rand() % 255,
+				255
+			);
+		}
+
+		for (auto item : clusters[clusterN].items)
+		{
+			items.emplace_back(
+				sf::Vector2f(item->pos.x, item->pos.y),
+				sf::Color(color)
+			);
+		}
+
+		renderWindow->draw(&items[0], items.size(), sf::Points);
+
+
+		kernel.setFillColor(sf::Color(color));
+		kernel.setPosition(sf::Vector2f(clusters[clusterN].kernel.x, clusters[clusterN].kernel.y));
+		renderWindow->draw(kernel);
+	}
+}
+
+
+
+void kmeansThreadFunc()
+{
+	kmeans->solve();
 }

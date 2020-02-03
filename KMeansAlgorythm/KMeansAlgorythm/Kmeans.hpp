@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <mutex>
 
 struct Point
 {
@@ -9,10 +10,23 @@ struct Point
 	unsigned short y;
 };
 
+struct Item
+{
+	Point pos;
+
+	Item(unsigned short x, unsigned short y)
+	{
+		pos.x = x;
+		pos.y = y;
+	}
+};
+
 struct Cluster
 {
 	Point kernel;
-	std::vector<std::shared_ptr<Point>> m_points;
+	std::vector<Item*> items;
+
+	Cluster(Point pos) : kernel(pos) { }
 };
 
 class Kmeans
@@ -24,13 +38,16 @@ private:
 	//
 	/////////////////////////////////////////////////
 
-	unsigned m_nOfPoints;
+	unsigned m_nOfItems;
 	unsigned short m_nOfClusters;
 	unsigned short m_areaWidth;
 	unsigned short m_areaHeight;
 
-	std::vector<std::shared_ptr<Point>> m_allPoints;
+	std::vector<Item> m_allItems;
 	std::vector<Cluster> m_clusters;
+	std::vector<Cluster> m_clustersCopyForDraw;
+
+	std::mutex m_mutex;
 
 	/////////////////////////////////////////////////
 	// 
@@ -38,7 +55,15 @@ private:
 	//
 	/////////////////////////////////////////////////
 
-	void randomizePoints();
+	void randomizeItems();
+	void createEmptyClusters(std::vector<Point>& kernels);
+
+	//-----------------------------------------------
+	//		Algorythm
+	//
+
+	void recalculateClusters();
+	double calculateEuclidDistance(Point& point, Point& kernel);
 
 public:
 	/////////////////////////////////////////////////
@@ -51,13 +76,19 @@ public:
 	//		Constructors
 	//
 	
-	Kmeans(unsigned nOfPoints, unsigned short nOfClusters, std::vector<Point> kernels, unsigned short areaWidth, unsigned short areaHeight);
+	Kmeans(unsigned nOfItems, unsigned short nOfClusters, std::vector<Point> kernels, unsigned short areaWidth, unsigned short areaHeight);
 
 	//-----------------------------------------------
 	//		Accessors
 	//
 
 		// Getters
-	std::vector<std::shared_ptr<Point>>& getAllPoints();
+	std::vector<Item>& getAllItems();
 	std::vector<Cluster>& getAllClusters();
+
+	//-----------------------------------------------
+	//		Algorythm
+	//
+
+	void solve();
 };
