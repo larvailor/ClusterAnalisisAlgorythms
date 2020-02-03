@@ -139,7 +139,7 @@ std::vector<Item>& Kmeans::getAllItems()
 	return m_allItems;
 }
 
-std::vector<Cluster>& Kmeans::getAllClusters()
+std::vector<Cluster> Kmeans::getAllClusters()
 {
 	std::lock_guard<std::mutex> lock(m_mutex);
 	return m_clustersCopyForDraw;

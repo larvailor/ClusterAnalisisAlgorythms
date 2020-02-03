@@ -14,7 +14,6 @@
 
 const unsigned short winWidth = 1500;
 const unsigned short winHeight = 800;
-const bool bVertex = true;
 
 //-----------------------------------------------
 //		Global variables
@@ -74,7 +73,7 @@ int main()
 
 		renderWindow->clear();
 		
-		bVertex ? drawVertex() : draw();
+		drawVertex();
 		
 		renderWindow->display();
 		
@@ -113,25 +112,9 @@ void initKmeans()
 
 
 
-void draw()
-{
-	auto& allItems = kmeans->getAllItems();
-
-	static sf::CircleShape cs(1);
-	cs.setFillColor(sf::Color::Red);
-
-	for (auto& item : allItems)
-	{
-		cs.setPosition(sf::Vector2f(item.pos.x, item.pos.y));
-		renderWindow->draw(cs);
-	}
-}
-
-
-
 void drawVertex()
 {
-	auto& clusters = kmeans->getAllClusters();
+	auto clusters = kmeans->getAllClusters();
 
 	std::vector<sf::Vertex> items;
 
@@ -169,7 +152,7 @@ void drawVertex()
 			);
 		}
 
-		for (auto item : clusters[clusterN].items)
+		for (auto& item : clusters[clusterN].items)
 		{
 			items.emplace_back(
 				sf::Vector2f(item->pos.x, item->pos.y),

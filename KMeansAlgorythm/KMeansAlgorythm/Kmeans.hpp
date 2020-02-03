@@ -86,7 +86,7 @@ public:
 
 		// Getters
 	std::vector<Item>& getAllItems();
-	std::vector<Cluster>& getAllClusters();
+	std::vector<Cluster> getAllClusters();
 
 	//-----------------------------------------------
 	//		Algorythm
