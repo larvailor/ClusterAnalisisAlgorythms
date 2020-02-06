@@ -13,30 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Kmeans">
-      <UniqueIdentifier>{bb8c782e-b2de-4dce-a9d7-681c8137b7bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="MaxMin">
-      <UniqueIdentifier>{54254a77-c119-4f63-9139-139cd13143a1}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source.cpp">
+    <ClInclude Include="framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Kmeans.cpp">
-      <Filter>Kmeans</Filter>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MaxMin.cpp">
-      <Filter>MaxMin</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Kmeans.hpp">
-      <Filter>Kmeans</Filter>
-    </ClInclude>
-    <ClInclude Include="MaxMin.hpp">
-      <Filter>MaxMin</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
