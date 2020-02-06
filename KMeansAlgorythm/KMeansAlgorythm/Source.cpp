@@ -6,7 +6,7 @@
 #include "SFML/Window.hpp"
 #include "SFML/System.hpp"
 
-#include "Kmeans.hpp"
+#include "MaxMin.hpp"
 
 //-----------------------------------------------
 //		Constants
@@ -27,7 +27,19 @@ std::vector<sf::Vertex> points;
 
 // Algorythms
 
-std::unique_ptr<Kmeans> kmeans;
+unsigned m_nOfItems;
+unsigned short m_nOfClusters;
+unsigned short m_areaWidth;
+unsigned short m_areaHeight;
+
+std::vector<Item> m_allItems;
+std::vector<Cluster> m_clusters;
+std::vector<Cluster> m_clustersCopyForDraw;
+
+std::mutex m_mutex;
+bool bSolved;
+
+std::unique_ptr<MaxMin> maxmin;
 
 
 
@@ -36,7 +48,6 @@ std::unique_ptr<Kmeans> kmeans;
 //
 
 void initKmeans();
-void draw();
 void drawVertex();
 
 void kmeansThreadFunc();
@@ -52,7 +63,7 @@ int main()
 	initKmeans();
 	std::thread kmeansThread(kmeansThreadFunc);
 
-	renderWindow = std::make_unique<sf::RenderWindow>(sf::VideoMode(winWidth, winHeight), "Kmeans", sf::Style::Titlebar | sf::Style::Close);
+	renderWindow = std::make_unique<sf::RenderWindow>(sf::VideoMode(winWidth, winHeight), "MaxMin", sf::Style::Titlebar | sf::Style::Close);
 	renderWindow->setFramerateLimit(60);
 
 	sf::Clock frameTime;
@@ -94,27 +105,15 @@ void initKmeans()
 	unsigned nOfItems;
 	std::cin >> nOfItems;
 
-	std::cout << "Enter the number of clusters: ";
-	unsigned short nOfClusters;
-	std::cin >> nOfClusters;
 
-	std::vector<Point> kernels;
-	Point kernel;
-	for (auto clusterN = 0; clusterN < nOfClusters; clusterN++)
-	{
-		std::cout << "Enter kernel "<< clusterN + 1 << " position [xpos ypox] in [" << winWidth << ", " << winHeight << "]" << std::endl;
-		std::cin >> kernel.x >> kernel.y;
-		kernels.push_back(kernel);
-	}
-
-	kmeans = std::make_unique<Kmeans>(nOfItems, nOfClusters, kernels, winWidth, winHeight);
+	maxmin = std::make_unique<MaxMin>(nOfItems, winWidth, winHeight);
 }
 
 
 
 void drawVertex()
 {
-	auto clusters = kmeans->getAllClusters();
+	auto clusters = maxmin->getAllClusters();
 
 	std::vector<sf::Vertex> items;
 
@@ -173,6 +172,6 @@ void drawVertex()
 
 void kmeansThreadFunc()
 {
-	kmeans->solve();
+	maxmin->solve();
 	std::cout << "SOLVED" << std::endl;
 }
