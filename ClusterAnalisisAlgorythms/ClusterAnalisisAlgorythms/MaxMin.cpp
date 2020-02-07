@@ -14,21 +14,6 @@
 //		Algorythm
 //
 
-void MaxMin::randomizeItems()
-{
-	std::srand(unsigned(std::time(0)));
-
-	for (unsigned int pointN = 0; pointN < m_nOfItems; pointN++)
-	{
-		m_allItems.emplace_back(
-			Item{
-				static_cast<unsigned short>(15 + rand() % (m_areaWidth - 25)),
-				static_cast<unsigned short>(15 + rand() % (m_areaHeight - 25))
-			}
-		);
-	}
-}
-
 void MaxMin::randomizeFirstCluster()
 {
 	unsigned firstKernelN = rand() % (m_allItems.size() - 1);
@@ -38,13 +23,6 @@ void MaxMin::randomizeFirstCluster()
 	{
 		m_clusters.back().items.emplace_back(&item);
 	}
-}
-
-void MaxMin::createCluster(Point& kernel)
-{
-	m_clusters.emplace_back(
-		Cluster{ kernel }
-	);
 }
 
 void MaxMin::recalculateAverageDistance()
@@ -79,44 +57,6 @@ Item* MaxMin::findTheFartestItem(const Cluster* const cluster)
 	return currFartestItem;
 }
 
-void MaxMin::recalculateClusters()
-{
-	for (auto& cluster : m_clusters)
-	{
-		cluster.items.clear();
-	}
-
-	static double currNearestClusterDistance;
-	static unsigned short currNearestClusterN;
-	static double newClusterDistance;
-
-	for (auto& item : m_allItems)
-	{
-		currNearestClusterDistance = calculateEuclidDistance(item.pos, m_clusters[0].kernel);
-		currNearestClusterN = 0;
-
-		for (unsigned short clusterN = 1; clusterN < m_clusters.size(); clusterN++)
-		{
-			newClusterDistance = calculateEuclidDistance(item.pos, m_clusters[clusterN].kernel);
-			if (newClusterDistance < currNearestClusterDistance)
-			{
-				currNearestClusterDistance = newClusterDistance;
-				currNearestClusterN = clusterN;
-			}
-		}
-
-		m_clusters[currNearestClusterN].items.emplace_back(&item);
-	}
-
-	std::lock_guard<std::mutex> lock(m_mutex);
-	m_clustersCopyForDraw = m_clusters;
-}
-
-double MaxMin::calculateEuclidDistance(const Point& point, const Point& kernel)
-{
-	return sqrt((point.x - kernel.x) * (point.x - kernel.x) + (point.y - kernel.y) * (point.y - kernel.y));
-}
-
 
 
 /////////////////////////////////////////////////
@@ -130,12 +70,9 @@ double MaxMin::calculateEuclidDistance(const Point& point, const Point& kernel)
 //
 
 MaxMin::MaxMin(unsigned nOfItems, unsigned short areaWidth, unsigned short areaHeight) :
-	m_nOfItems(nOfItems),
-	m_areaWidth(areaWidth),
-	m_areaHeight(areaHeight),
-	m_bSolved(false)
+	Algorythm(nOfItems, areaWidth, areaHeight)
 {
-	randomizeItems();
+
 }
 
 
@@ -200,18 +137,4 @@ void MaxMin::solve()
 		}
 
 	}
-}
-
-
-
-//-----------------------------------------------
-//		Accessors
-//
-
-//		Getters
-
-std::vector<Cluster> MaxMin::getAllClusters()
-{
-	std::lock_guard<std::mutex> lock(m_mutex);
-	return m_clustersCopyForDraw;
 }
