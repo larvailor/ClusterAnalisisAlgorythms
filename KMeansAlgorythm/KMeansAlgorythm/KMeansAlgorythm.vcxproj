@@ -133,11 +133,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Algorythm.cpp" />
     <ClCompile Include="Kmeans.cpp" />
     <ClCompile Include="MaxMin.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Algorythm.hpp" />
     <ClInclude Include="Kmeans.hpp" />
     <ClInclude Include="MaxMin.hpp" />
   </ItemGroup>
