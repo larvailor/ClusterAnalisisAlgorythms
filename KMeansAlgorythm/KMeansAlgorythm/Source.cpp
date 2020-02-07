@@ -47,6 +47,8 @@ std::unique_ptr<MaxMin> maxmin;
 //		Forward declarations
 //
 
+void processStartMenu();
+
 void initKmeans();
 void drawVertex();
 
@@ -59,7 +61,10 @@ void kmeansThreadFunc();
 //
 
 int main()
-{	std::srand(unsigned(std::time(0)));
+{	
+	//processStartMenu();
+
+	std::srand(unsigned(std::time(0)));
 	initKmeans();
 	std::thread kmeansThread(kmeansThreadFunc);
 
@@ -88,13 +93,46 @@ int main()
 		
 		renderWindow->display();
 		
-		std::cout << "      FT: " << frameTime.getElapsedTime().asSeconds() << std::endl;
+		//std::cout << "      FT: " << frameTime.getElapsedTime().asSeconds() << std::endl;
 		frameTime.restart().asSeconds();
 	}
 
 	kmeansThread.join();
 
 	return 0;
+}
+
+
+
+void processStartMenu()
+{
+	bool bCorrectInput;
+	do
+	{
+		bCorrectInput = true;
+
+		std::cout << "What type of algorythm do you want to use: " << std::endl;
+		std::cout << "1. Kmeans" << std::endl;
+		std::cout << "2. MaxMin" << std::endl;
+		std::cout << "           Your choice: ";
+
+		char choice;
+		std::cin >> choice;
+		switch (choice)
+		{
+		case '1':
+			std::cout << "Your choice is Kmeans!" << std::endl << std::endl << std::endl;
+
+			break;
+		case '2':
+			std::cout << "Your choice is MaxMin!" << std::endl << std::endl << std::endl;
+
+			break;
+		default:
+			std::cout << "Your input is uncorrect! Try again!" << std::endl << std::endl << std::endl;
+			bCorrectInput = false;
+		}
+	} while (!bCorrectInput);
 }
 
 

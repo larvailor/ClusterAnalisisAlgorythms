@@ -5,18 +5,13 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Algorythms">
+      <UniqueIdentifier>{89a0e821-3c0a-4b89-99e9-878c83ceae06}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Kmeans">
+    <Filter Include="Algorythms\Kmeans">
       <UniqueIdentifier>{bb8c782e-b2de-4dce-a9d7-681c8137b7bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MaxMin">
+    <Filter Include="Algorythms\MaxMin">
       <UniqueIdentifier>{54254a77-c119-4f63-9139-139cd13143a1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -25,18 +20,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Kmeans.cpp">
-      <Filter>Kmeans</Filter>
+      <Filter>Algorythms\Kmeans</Filter>
     </ClCompile>
     <ClCompile Include="MaxMin.cpp">
-      <Filter>MaxMin</Filter>
+      <Filter>Algorythms\MaxMin</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorythm.cpp">
+      <Filter>Algorythms</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Kmeans.hpp">
-      <Filter>Kmeans</Filter>
+      <Filter>Algorythms\Kmeans</Filter>
     </ClInclude>
     <ClInclude Include="MaxMin.hpp">
-      <Filter>MaxMin</Filter>
+      <Filter>Algorythms\MaxMin</Filter>
+    </ClInclude>
+    <ClInclude Include="Algorythm.hpp">
+      <Filter>Algorythms</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
