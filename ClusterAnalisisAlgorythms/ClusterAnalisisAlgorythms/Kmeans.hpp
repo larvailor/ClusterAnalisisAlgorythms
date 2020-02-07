@@ -30,7 +30,7 @@ public:
 	//		Constructors
 	//
 	
-	Kmeans(unsigned nOfItems, unsigned short nOfClusters, std::vector<Point> kernels, unsigned short areaWidth, unsigned short areaHeight);
+	Kmeans(unsigned nOfItems, std::vector<Point> kernels, unsigned short areaWidth, unsigned short areaHeight);
 
 	//-----------------------------------------------
 	//		Algorythm

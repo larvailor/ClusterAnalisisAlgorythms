@@ -63,7 +63,7 @@ void Kmeans::recalculateKernels()
 //		Constructors
 //
 
-Kmeans::Kmeans(unsigned nOfItems, unsigned short nOfClusters, std::vector<Point> kernels, unsigned short areaWidth, unsigned short areaHeight) :
+Kmeans::Kmeans(unsigned nOfItems, std::vector<Point> kernels, unsigned short areaWidth, unsigned short areaHeight) :
 	Algorythm(nOfItems, areaWidth, areaHeight)
 {
 	createEmptyClusters(kernels);
