@@ -31,7 +31,7 @@ struct Cluster
 
 class Algorythm
 {
-private:
+protected:
 	/////////////////////////////////////////////////
 	// 
 	//		VARIABLES
