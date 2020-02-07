@@ -6,6 +6,7 @@
 #include "SFML/Window.hpp"
 #include "SFML/System.hpp"
 
+#include "Kmeans.hpp"
 #include "MaxMin.hpp"
 
 //-----------------------------------------------
@@ -22,24 +23,17 @@ const unsigned short winHeight = 800;
 // Drawing
 
 std::unique_ptr<sf::RenderWindow> renderWindow;
-std::vector<sf::Vertex> points;
 
 
 // Algorythms
-
-unsigned m_nOfItems;
-unsigned short m_nOfClusters;
-unsigned short m_areaWidth;
-unsigned short m_areaHeight;
 
 std::vector<Item> m_allItems;
 std::vector<Cluster> m_clusters;
 std::vector<Cluster> m_clustersCopyForDraw;
 
 std::mutex m_mutex;
-bool bSolved;
 
-std::unique_ptr<MaxMin> maxmin;
+std::unique_ptr<Algorythm> algorythm;
 
 
 
@@ -50,9 +44,11 @@ std::unique_ptr<MaxMin> maxmin;
 void processStartMenu();
 
 void initKmeans();
+void initMaxMin();
+
 void drawVertex();
 
-void kmeansThreadFunc();
+void algorythmThreadFunc();
 
 
 
@@ -62,11 +58,10 @@ void kmeansThreadFunc();
 
 int main()
 {	
-	//processStartMenu();
+	processStartMenu();
 
 	std::srand(unsigned(std::time(0)));
-	initKmeans();
-	std::thread kmeansThread(kmeansThreadFunc);
+	std::thread algorythmThread(algorythmThreadFunc);
 
 	renderWindow = std::make_unique<sf::RenderWindow>(sf::VideoMode(winWidth, winHeight), "MaxMin", sf::Style::Titlebar | sf::Style::Close);
 	renderWindow->setFramerateLimit(60);
@@ -97,7 +92,7 @@ int main()
 		frameTime.restart().asSeconds();
 	}
 
-	kmeansThread.join();
+	algorythmThread.join();
 
 	return 0;
 }
@@ -122,11 +117,11 @@ void processStartMenu()
 		{
 		case '1':
 			std::cout << "Your choice is Kmeans!" << std::endl << std::endl << std::endl;
-
+			initKmeans();
 			break;
 		case '2':
 			std::cout << "Your choice is MaxMin!" << std::endl << std::endl << std::endl;
-
+			initMaxMin();
 			break;
 		default:
 			std::cout << "Your input is uncorrect! Try again!" << std::endl << std::endl << std::endl;
@@ -143,15 +138,39 @@ void initKmeans()
 	unsigned nOfItems;
 	std::cin >> nOfItems;
 
+	std::cout << "Enter the number of clusters: ";
+	unsigned nOfClusters;
+	std::cin >> nOfClusters;
 
-	maxmin = std::make_unique<MaxMin>(nOfItems, winWidth, winHeight);
+	std::vector<Point> kernels;
+	Point kernel;
+	for (auto clusterN = 0; clusterN < nOfClusters; clusterN++)
+	{
+		std::cout << "Enter kernel " << clusterN + 1 << " position [xpos ypox] in [" << winWidth << ", " << winHeight << "]" << std::endl;
+		std::cin >> kernel.x >> kernel.y;
+		kernels.push_back(kernel);
+	}
+
+	algorythm = std::make_unique<Kmeans>(nOfItems, kernels, winWidth, winHeight);
+}
+
+
+
+void initMaxMin()
+{
+	std::cout << "Enter the number of items: ";
+	unsigned nOfItems;
+	std::cin >> nOfItems;
+
+
+	algorythm = std::make_unique<MaxMin>(nOfItems, winWidth, winHeight);
 }
 
 
 
 void drawVertex()
 {
-	auto clusters = maxmin->getAllClusters();
+	auto clusters = algorythm->getAllClusters();
 
 	std::vector<sf::Vertex> items;
 
@@ -208,8 +227,8 @@ void drawVertex()
 
 
 
-void kmeansThreadFunc()
+void algorythmThreadFunc()
 {
-	maxmin->solve();
+	algorythm->solve();
 	std::cout << "SOLVED" << std::endl;
 }
